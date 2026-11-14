@@ -2,3 +2,4 @@
 source/**/.gradle/
 build/
 source/**/build/
+.vscode
