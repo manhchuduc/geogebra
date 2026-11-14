@@ -16,6 +16,10 @@
 
 package org.geogebra.common.gui.toolbar;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
 import org.geogebra.common.euclidian.EuclidianConstants;
@@ -765,6 +769,47 @@ public class ToolBar {
 			}
 		}
 		return toolbarString + " | " + mode;
+	}
+
+	/**
+	 * Adds visible macro tools to a toolbar definition without changing its existing tools.
+	 *
+	 * @param toolbarString toolbar definition
+	 * @param app application
+	 * @return toolbar definition including visible macro tools
+	 */
+	public static String addMacroTools(String toolbarString, App app) {
+		if (toolbarString == null || toolbarString.isEmpty() || GlobalScope.isExamActive(app)) {
+			return toolbarString;
+		}
+
+		List<Integer> macroModes = new ArrayList<>();
+		Kernel kernel = app.getKernel();
+		for (int i = 0; i < kernel.getMacroNumber(); i++) {
+			if (kernel.getMacro(i).isShowInToolBar()) {
+				macroModes.add(i + EuclidianConstants.MACRO_MODE_ID_OFFSET);
+			}
+		}
+		return addMacroModes(toolbarString, macroModes);
+	}
+
+	static String addMacroModes(String toolbarString, List<Integer> macroModes) {
+		Set<Integer> existingModes = new HashSet<>();
+		for (ToolbarItem item : parseToolbarString(toolbarString)) {
+			if (item.getMenu() == null) {
+				existingModes.add(item.getMode());
+			} else {
+				existingModes.addAll(item.getMenu());
+			}
+		}
+
+		for (int i = macroModes.size() - 1; i >= 0; i--) {
+			int mode = macroModes.get(i);
+			if (!existingModes.contains(mode)) {
+				toolbarString = addMode(toolbarString, mode);
+			}
+		}
+		return toolbarString;
 	}
 
 	/**

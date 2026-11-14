@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.gui.Layout;
+import org.geogebra.common.gui.toolbar.ToolBar;
 import org.geogebra.common.io.layout.DockPanelData;
 import org.geogebra.common.io.layout.Perspective;
 import org.geogebra.common.io.layout.PerspectiveDecoder;
@@ -111,7 +112,9 @@ public final class LayoutW extends Layout {
 	 * @param perspective perspective
 	 */
 	public void updateLayout(Perspective perspective) {
-		updateLayout(perspective, perspective.getToolbarDefinition());
+		updateLayout(
+				perspective,
+				ToolBar.addMacroTools(perspective.getToolbarDefinition(), app));
 	}
 
 	/**
@@ -142,6 +145,8 @@ public final class LayoutW extends Layout {
 			}
 		}
 		dockManager.applyPerspective(perspective.getSplitPaneData(), perspective.getDockPanelData());
+		app.getGuiManager().setGeneralToolBarDefinition(
+				ToolBar.addMacroTools(customToolbarDef, app));
 
 		app.setMacroViewIds(toolbar3D);
 		boolean linearInput =

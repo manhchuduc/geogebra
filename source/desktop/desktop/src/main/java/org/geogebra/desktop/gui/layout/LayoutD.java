@@ -25,6 +25,7 @@ import javax.swing.SwingUtilities;
 
 import org.geogebra.common.euclidian.EuclidianView;
 import org.geogebra.common.gui.Layout;
+import org.geogebra.common.gui.toolbar.ToolBar;
 import org.geogebra.common.io.layout.DockPanelData;
 import org.geogebra.common.io.layout.Perspective;
 import org.geogebra.common.main.App;
@@ -91,7 +92,9 @@ public class LayoutD extends Layout {
 
 		// ignore axes & grid settings for the document perspective
 
-		app.getGuiManager().setToolBarDefinition(perspective.getToolbarDefinition());
+		String toolbarDefinition =
+				ToolBar.addMacroTools(perspective.getToolbarDefinition(), app);
+		app.getGuiManager().setToolBarDefinition(toolbarDefinition);
 
 		app.setShowToolBar(perspective.getShowToolBar());
 		app.setShowToolBarHelpNoUpdate(perspective.getShowToolBarHelp());
@@ -105,6 +108,8 @@ public class LayoutD extends Layout {
 
 		// change the dock panel layout
 		dockManager.applyPerspective(perspective.getSplitPaneData(), perspective.getDockPanelData());
+		app.getGuiManager().setToolBarDefinition(
+				ToolBar.addMacroTools(toolbarDefinition, app));
 
 		// apply ev settings after focus on view
 		boolean changed = setEVsettingsFromPerspective(app, perspective);
