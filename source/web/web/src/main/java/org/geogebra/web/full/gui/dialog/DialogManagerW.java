@@ -272,6 +272,8 @@ public class DialogManagerW extends DialogManager implements LoadingApplication 
 				handler,
 				app.getLocalization().getPlain("NewNameForA", geo.getNameDescription()),
 				initText);
+		int mode = app.getMode();
+		renameDialog.addCloseHandler(event -> app.setMode(mode));
 		renameDialog.show();
 	}
 

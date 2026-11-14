@@ -167,6 +167,13 @@ public abstract class GlobalKeyDispatcher {
 			return true;
 		}
 
+		if (Character.isLetter(ch) && geo.isRenameable()) {
+			if (app.getDialogManager() != null) {
+				app.getDialogManager().showRenameDialog(geo, true, Character.toString(ch), false);
+			}
+			return true;
+		}
+
 		switch (ch) {
 			case '/':
 				toggleSelectionVisibility();

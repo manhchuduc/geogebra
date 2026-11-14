@@ -1810,7 +1810,8 @@ public class AppD extends App implements KeyEventDispatcher, AppDI {
 				MyImageD img = getExternalImage(iconName);
 				if (img == null || img.isSVG()) {
 					// default icon
-					icon = new ScaledIcon(getToolIconImage(border), imageManager.getPixelRatio());
+					icon = imageManager.getResponsiveScaledIcon(
+							getToolIconImage(border), imageManager.getMaxIconSize());
 				} else {
 					// use image as icon
 					int size = imageManager.getMaxScaledIconSize();

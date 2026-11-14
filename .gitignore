@@ -1,0 +1,4 @@
+.gradle/
+source/**/.gradle/
+build/
+source/**/build/

@@ -96,6 +96,14 @@ class GlobalKeyDispatcherTest extends BaseAppTestSetup {
 		getApp().getSelectionManager().addSelectedGeo(pt);
 	}
 
+	@Test
+	void typingLetterOnGeoStartsRename() {
+		GeoPoint point = evaluateGeoElement("(1,1)");
+		selectGeo(point);
+
+		assertTrue(dispatcher.keyPressedOnGeo('A'));
+	}
+
 	@ParameterizedTest
 	@CsvSource(
 			value = {"num=Slider(0,5,1);5;5;5", "pt=Point(Segment((0,0),(0.5,0)));5;0;10"},

@@ -33,6 +33,14 @@ To start the desktop version from command line, run
 ```
 You can also run `./gradlew -p source/desktop :desktop:tasks` to list other options.
 
+## Building a portable Windows version
+On Linux, install JDK 25 and run `./build-portable-windows.sh` from the
+repository root. The script downloads the pinned Windows JRE and Launch4j
+cross-build tools, then creates the portable ZIP with `GeoGebra.exe`, its icon,
+and the bundled runtime. On Windows, set `JAVA_HOME` to JDK 25 and run
+`build-portable-windows.bat` instead. Both scripts create
+`source/desktop/desktop/build/distributions/geogebra-classic5-portable-windows-x64.zip`.
+
 ## Setup the development environment
 
 * Open IntelliJ. If you don't have IntelliJ on your computer yet,

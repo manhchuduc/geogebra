@@ -220,6 +220,7 @@ public class DialogManagerD extends DialogManagerMinimal {
 			((GuiManagerD) app.getGuiManager()).clearInputbar();
 		}
 		InputHandler handler = new RenameInputHandler(app, geo, storeUndo);
+		int mode = app.getMode();
 
 		// a Chinese friendly version
 		InputDialogD id = new InputDialogD(
@@ -238,7 +239,15 @@ public class DialogManagerD extends DialogManagerMinimal {
 				handler,
 				false,
 				selectInitText,
-				null);
+				null) {
+			@Override
+			public void handleDialogVisibilityChange(boolean isVisible) {
+				super.handleDialogVisibilityChange(isVisible);
+				if (!isVisible) {
+					app.setMode(mode);
+				}
+			}
+		};
 		id.setVisible(true);
 	}
 
