@@ -89,6 +89,9 @@ class ToolToggleButton extends JToggleButton
 	// set mode
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (showMenuTimer != null && showMenuTimer.isRunning()) {
+			showMenuTimer.stop();
+		}
 
 		// don't select mode if popup triangle clicked
 		if (!popupTriangleClicked || !menu.isPopupShowing()) {
@@ -212,28 +215,23 @@ class ToolToggleButton extends JToggleButton
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (!menu.isPopupShowing() && popupTriangleClicked(e.getY())) {
-			menu.setPopupVisible(true);
-			this.getModel().setArmed(false);
-		} else {
-			// Display the menu after a specific amount of time as well, start
-			// a timer for this. actionPerformed method stops this timer,
-			// which ensures that the menu is displayed after user released the
-			// mouse
-			if (showMenuTimer == null) {
-				showMenuTimer = new Timer(1000, e1 -> {
-					menu.setPopupVisible(true);
-					showMenuTimer.stop();
-				});
-				showMenuTimer.setRepeats(false);
-			}
+		popupTriangleClicked(e.getY());
 
-			showMenuTimer.start();
+		// A short click selects the current tool; holding the button opens the
+		// menu for the other tools in this group.
+		if (showMenuTimer == null) {
+			showMenuTimer = new Timer(1000, e1 -> {
+				menu.setPopupVisible(true);
+				showMenuTimer.stop();
+			});
+			showMenuTimer.setRepeats(false);
 		}
+		showMenuTimer.start();
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
+		ToolTipManager.sharedInstance().mouseExited(arg0);
 		menu.setMouseOverButton(null);
 		if (popupTriangleHighlighting) {
 			popupTriangleHighlighting = false;

@@ -14,7 +14,7 @@ JRE_ARCHIVE="$CACHE_DIR/temurin-jre.zip"
 JRE_URL="https://api.adoptium.net/v3/binary/version/jdk-25.0.5+8/windows/x64/jre/hotspot/normal/eclipse?project=jdk"
 JRE_SHA256="da78d54a2fcdbba1e92d5e3f07dd30236f96297891c4a21a781c3f38f5c0beae"
 LAUNCH4J_ARCHIVE="$LAUNCH4J_CACHE_DIR/launch4j-linux.tgz"
-LAUNCH4J_URL="https://sourceforge.net/projects/launch4j/files/launch4j-3/3.50/launch4j-3.50-linux.tgz/download"
+LAUNCH4J_URL="https://sourceforge.net/projects/launch4j/files/launch4j-3/3.50/launch4j-3.50-linux-x64.tgz/download"
 LAUNCH4J_SHA256="a6ad95c2fb6300410543288308b4eeae72ecd1df033928dfc524ba539bbc4d36"
 LAUNCH4J_HOME="$LAUNCH4J_CACHE_DIR/launch4j"
 
