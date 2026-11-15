@@ -142,7 +142,7 @@ public class GlobalKeyDispatcherD extends GlobalKeyDispatcher implements KeyEven
 			return false;
 		}
 		if (!event.isMetaDown() && !event.isAltDown() && !event.isControlDown()) {
-			keyPressedOnGeo(event.getKeyChar());
+			return keyPressedOnGeo(event.getKeyChar());
 		}
 		return false;
 	}
