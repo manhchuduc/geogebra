@@ -41,6 +41,12 @@ and the bundled runtime. On Windows, set `JAVA_HOME` to JDK 25 and run
 `build-portable-windows.bat` instead. Both scripts create
 `source/desktop/desktop/build/distributions/geogebra-classic5-portable-windows-x64.zip`.
 
+## Building a portable Linux version
+On Linux x86_64, install JDK 25 and run `./build-portable-linux.sh` from the
+repository root. The script creates a self-contained application image with a
+bundled Java runtime and packages it as
+`source/desktop/desktop/build/distributions/geogebra-classic5-portable-linux-x64.tar.gz`.
+
 ## Setup the development environment
 
 * Open IntelliJ. If you don't have IntelliJ on your computer yet,
