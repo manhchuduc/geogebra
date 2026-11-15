@@ -92,10 +92,9 @@ class ToolToggleButton extends JToggleButton
 		if (showMenuTimer != null && showMenuTimer.isRunning()) {
 			showMenuTimer.stop();
 		}
-
-		// don't select mode if popup triangle clicked
-		if (!popupTriangleClicked || !menu.isPopupShowing()) {
-			app.setMode(Integer.parseInt(e.getActionCommand()));
+		app.setMode(Integer.parseInt(e.getActionCommand()));
+		if (menu.isPopupShowing()) {
+			menu.setPopupVisible(false);
 		}
 	}
 
@@ -198,17 +197,19 @@ class ToolToggleButton extends JToggleButton
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (!menu.isPopupShowing() && e.getClickCount() == 2) {
-			menu.setPopupVisible(true);
-		}
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 
 		defaultInitialDelay = ToolTipManager.sharedInstance().getInitialDelay();
+		menu.cancelPopupHide();
 		if (toolbar.preventToolTipDelay()) {
 			ToolTipManager.sharedInstance().setInitialDelay(0);
+		}
+		showToolTipText = menu.size <= 1;
+		if (menu.size > 1 && !menu.isPopupShowing()) {
+			startMenuTimer();
 		}
 		menu.setMouseOverButton(this);
 	}
@@ -216,22 +217,19 @@ class ToolToggleButton extends JToggleButton
 	@Override
 	public void mousePressed(MouseEvent e) {
 		popupTriangleClicked(e.getY());
-
-		// A short click selects the current tool; holding the button opens the
-		// menu for the other tools in this group.
-		if (showMenuTimer == null) {
-			showMenuTimer = new Timer(1000, e1 -> {
-				menu.setPopupVisible(true);
-				showMenuTimer.stop();
-			});
-			showMenuTimer.setRepeats(false);
+		if (showMenuTimer != null) {
+			showMenuTimer.stop();
 		}
-		showMenuTimer.start();
+		if (menu.isPopupShowing()) {
+			menu.setPopupVisible(false);
+		}
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		ToolTipManager.sharedInstance().mouseExited(arg0);
+		ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
+		// Force-hide the tooltip even when the pointer exits into the tooltip.
+		toolTipManager.mousePressed(arg0);
 		menu.setMouseOverButton(null);
 		if (popupTriangleHighlighting) {
 			popupTriangleHighlighting = false;
@@ -243,8 +241,10 @@ class ToolToggleButton extends JToggleButton
 		if (showMenuTimer != null && showMenuTimer.isRunning()) {
 			showMenuTimer.stop();
 		}
+		menu.schedulePopupHide();
 
-		ToolTipManager.sharedInstance().setInitialDelay(defaultInitialDelay);
+		toolTipManager.setInitialDelay(defaultInitialDelay);
+		showToolTipText = true;
 	}
 
 	@Override
@@ -270,13 +270,26 @@ class ToolToggleButton extends JToggleButton
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		menu.mouseOver();
-		showToolTipText = !menu.isPopupShowing();
+		showToolTipText = menu.size <= 1 && !menu.isPopupShowing();
 
 		// highlight popup menu triangle
 		if (menu.size > 1 && popupTriangleHighlighting != popupTriangleClicked(e.getY())) {
 			popupTriangleHighlighting = !popupTriangleHighlighting;
 			repaint();
 		}
+	}
+
+	private void startMenuTimer() {
+		if (showMenuTimer == null) {
+			showMenuTimer = new Timer(500, e -> {
+				if (menu.getMouseOverButton() == this) {
+					menu.setPopupVisible(true);
+				}
+				showMenuTimer.stop();
+			});
+			showMenuTimer.setRepeats(false);
+		}
+		showMenuTimer.start();
 	}
 
 	@Override

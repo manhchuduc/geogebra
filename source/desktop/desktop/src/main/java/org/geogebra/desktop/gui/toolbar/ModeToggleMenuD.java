@@ -21,6 +21,8 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
@@ -31,6 +33,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import org.geogebra.common.euclidian.EuclidianConstants;
 import org.geogebra.common.kernel.ModeSetter;
@@ -51,6 +54,18 @@ public class ModeToggleMenuD extends JPanel {
 	private ActionListener popupMenuItemListener;
 	private AppD app;
 	int size;
+	private Timer hidePopupTimer;
+	private final MouseAdapter popupMouseListener = new MouseAdapter() {
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			cancelPopupHide();
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			schedulePopupHide();
+		}
+	};
 
 	private final ToolbarD toolbar;
 
@@ -73,6 +88,7 @@ public class ModeToggleMenuD extends JPanel {
 
 		popMenu = new JPopupMenu();
 		popMenu.setBackground(bgColor);
+		popMenu.addMouseListener(popupMouseListener);
 		menuItemList = new ArrayList<>();
 		popupMenuItemListener = new MenuItemListener();
 		size = 0;
@@ -151,6 +167,7 @@ public class ModeToggleMenuD extends JPanel {
 		mi.setIcon(icon);
 		mi.setActionCommand(actionText);
 		mi.addActionListener(popupMenuItemListener);
+		mi.addMouseListener(popupMouseListener);
 
 		popMenu.add(mi);
 		menuItemList.add(mi);
@@ -189,6 +206,7 @@ public class ModeToggleMenuD extends JPanel {
 	 */
 	public void addSeparator() {
 		popMenu.addSeparator();
+		popMenu.getComponent(popMenu.getComponentCount() - 1).addMouseListener(popupMouseListener);
 	}
 
 	// sets new mode when item in popup menu is selected
@@ -241,6 +259,7 @@ public class ModeToggleMenuD extends JPanel {
 	 */
 	public void setPopupVisible(boolean flag) {
 		if (flag) {
+			cancelPopupHide();
 			bg.setActivePopupMenu(popMenu);
 			if (popMenu.isShowing()) {
 				return;
@@ -274,10 +293,28 @@ public class ModeToggleMenuD extends JPanel {
 						locButton.y - locApp.y + tbutton.getHeight() / 2);
 			}
 		} else {
+			cancelPopupHide();
 			popMenu.setVisible(false);
 		}
 
 		tbutton.repaint();
+	}
+
+	void schedulePopupHide() {
+		if (!popMenu.isShowing()) {
+			return;
+		}
+		if (hidePopupTimer == null) {
+			hidePopupTimer = new Timer(250, e -> setPopupVisible(false));
+			hidePopupTimer.setRepeats(false);
+		}
+		hidePopupTimer.restart();
+	}
+
+	void cancelPopupHide() {
+		if (hidePopupTimer != null) {
+			hidePopupTimer.stop();
+		}
 	}
 
 	/**
