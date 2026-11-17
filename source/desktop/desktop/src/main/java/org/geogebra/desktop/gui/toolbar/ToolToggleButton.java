@@ -35,7 +35,6 @@ import javax.swing.Icon;
 import javax.swing.JToggleButton;
 import javax.swing.JToolTip;
 import javax.swing.SwingConstants;
-import javax.swing.Timer;
 import javax.swing.ToolTipManager;
 
 import org.geogebra.common.main.App;
@@ -61,7 +60,6 @@ class ToolToggleButton extends JToggleButton
 	private static final Color selColor = new Color(0, 0, 153, 200);
 	private static final BasicStroke selStroke = new BasicStroke(3f);
 
-	private Timer showMenuTimer;
 	private final ToolbarD toolbar;
 	private final App app;
 	int defaultInitialDelay;
@@ -89,9 +87,6 @@ class ToolToggleButton extends JToggleButton
 	// set mode
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (showMenuTimer != null && showMenuTimer.isRunning()) {
-			showMenuTimer.stop();
-		}
 		app.setMode(Integer.parseInt(e.getActionCommand()));
 		if (menu.isPopupShowing()) {
 			menu.setPopupVisible(false);
@@ -208,18 +203,15 @@ class ToolToggleButton extends JToggleButton
 			ToolTipManager.sharedInstance().setInitialDelay(0);
 		}
 		showToolTipText = menu.size <= 1;
-		if (menu.size > 1 && !menu.isPopupShowing()) {
-			startMenuTimer();
-		}
 		menu.setMouseOverButton(this);
+		if (menu.size > 1) {
+			menu.setPopupVisible(true);
+		}
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		popupTriangleClicked(e.getY());
-		if (showMenuTimer != null) {
-			showMenuTimer.stop();
-		}
 		if (menu.isPopupShowing()) {
 			menu.setPopupVisible(false);
 		}
@@ -236,11 +228,6 @@ class ToolToggleButton extends JToggleButton
 			repaint();
 		}
 
-		// Stop the timer to show the menu if the user is no longer
-		// hovering over this button.
-		if (showMenuTimer != null && showMenuTimer.isRunning()) {
-			showMenuTimer.stop();
-		}
 		menu.schedulePopupHide();
 
 		toolTipManager.setInitialDelay(defaultInitialDelay);
@@ -277,19 +264,6 @@ class ToolToggleButton extends JToggleButton
 			popupTriangleHighlighting = !popupTriangleHighlighting;
 			repaint();
 		}
-	}
-
-	private void startMenuTimer() {
-		if (showMenuTimer == null) {
-			showMenuTimer = new Timer(500, e -> {
-				if (menu.getMouseOverButton() == this) {
-					menu.setPopupVisible(true);
-				}
-				showMenuTimer.stop();
-			});
-			showMenuTimer.setRepeats(false);
-		}
-		showMenuTimer.start();
 	}
 
 	@Override
