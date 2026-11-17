@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 
+import javax.swing.JFrame;
 import javax.swing.JRootPane;
 import javax.swing.JTable;
 import javax.swing.text.JTextComponent;
@@ -81,7 +82,7 @@ public class GlobalKeyDispatcherD extends GlobalKeyDispatcher implements KeyEven
 		// or key events coming from popups (source class = JRootPane)
 		if (event.isConsumed()
 				|| event.getSource() instanceof JTextComponent
-				|| event.getSource() instanceof JRootPane
+				|| isIgnoredRootPaneEvent(event)
 				|| event.getSource() instanceof MathFieldD) {
 			return false;
 		}
@@ -108,6 +109,17 @@ public class GlobalKeyDispatcherD extends GlobalKeyDispatcher implements KeyEven
 			event.consume();
 		}
 		return consumed;
+	}
+
+	private boolean isIgnoredRootPaneEvent(KeyEvent event) {
+		if (!(event.getSource() instanceof JRootPane rootPane)) {
+			return false;
+		}
+		if (event.getID() != KeyEvent.KEY_TYPED) {
+			return true;
+		}
+		JFrame frame = ((AppD) app).getFrame();
+		return frame == null || rootPane != frame.getRootPane();
 	}
 
 	/**

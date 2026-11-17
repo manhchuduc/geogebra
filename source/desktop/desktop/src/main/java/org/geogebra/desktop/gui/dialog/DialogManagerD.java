@@ -17,6 +17,7 @@
 package org.geogebra.desktop.gui.dialog;
 
 import java.awt.Point;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -221,6 +222,8 @@ public class DialogManagerD extends DialogManagerMinimal {
 		}
 		InputHandler handler = new RenameInputHandler(app, geo, storeUndo);
 		int mode = app.getMode();
+		boolean quickRename = initText != null && initText.length() == 1
+				&& Character.isLetter(initText.charAt(0)) && !selectInitText;
 
 		// a Chinese friendly version
 		InputDialogD id = new InputDialogD(
@@ -240,6 +243,8 @@ public class DialogManagerD extends DialogManagerMinimal {
 				false,
 				selectInitText,
 				null) {
+			private boolean quickRenameInitialized;
+
 			@Override
 			public void handleDialogVisibilityChange(boolean isVisible) {
 				super.handleDialogVisibilityChange(isVisible);
@@ -247,8 +252,24 @@ public class DialogManagerD extends DialogManagerMinimal {
 					app.setMode(mode);
 				}
 			}
+
+			@Override
+			public void windowGainedFocus(WindowEvent event) {
+				super.windowGainedFocus(event);
+				if (quickRename && !quickRenameInitialized) {
+					quickRenameInitialized = true;
+					SwingUtilities.invokeLater(() -> {
+						setText(initText);
+						inputPanel.getTextComponent().setCaretPosition(initText.length());
+					});
+				}
+			}
 		};
-		id.setVisible(true);
+		if (quickRename) {
+			SwingUtilities.invokeLater(() -> id.setVisible(true));
+		} else {
+			id.setVisible(true);
+		}
 	}
 
 	/**
