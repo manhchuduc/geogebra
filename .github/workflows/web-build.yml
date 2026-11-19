@@ -40,3 +40,12 @@ jobs:
 
       - name: Build web app
         run: ./gradlew -p source/web :web:prepareS3Upload
+
+      - name: Upload web build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: geogebra-web-build
+          path: |
+            source/web/web/build/s3/
+            source/web/web/build/symbolMapsGz/
+          if-no-files-found: error
