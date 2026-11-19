@@ -47,6 +47,10 @@ repository root. The script creates a self-contained application image with a
 bundled Java runtime and packages it as
 `source/desktop/desktop/build/distributions/geogebra-classic5-portable-linux-x64.tar.gz`.
 
+When a GitHub Release is published, the
+`.github/workflows/portable-release.yml` workflow builds both portable packages
+and uploads them to that release.
+
 ## Setup the development environment
 
 * Open IntelliJ. If you don't have IntelliJ on your computer yet,
