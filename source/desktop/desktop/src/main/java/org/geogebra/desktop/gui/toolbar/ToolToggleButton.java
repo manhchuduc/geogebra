@@ -88,9 +88,6 @@ class ToolToggleButton extends JToggleButton
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		app.setMode(Integer.parseInt(e.getActionCommand()));
-		if (menu.isPopupShowing()) {
-			menu.setPopupVisible(false);
-		}
 	}
 
 	@Override
@@ -192,6 +189,14 @@ class ToolToggleButton extends JToggleButton
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		if (!menu.isPopupShowing()
+				&& (popupTriangleClicked(e.getY()) || e.getClickCount() == 2)) {
+			showToolTipText = false;
+			menu.setPopupVisible(true);
+		} else if (menu.isPopupShowing() && !popupTriangleClicked(e.getY())
+				&& e.getClickCount() == 1) {
+			menu.setPopupVisible(false);
+		}
 	}
 
 	@Override
@@ -202,11 +207,8 @@ class ToolToggleButton extends JToggleButton
 		if (toolbar.preventToolTipDelay()) {
 			ToolTipManager.sharedInstance().setInitialDelay(0);
 		}
-		showToolTipText = menu.size <= 1;
+		showToolTipText = !menu.isPopupShowing();
 		menu.setMouseOverButton(this);
-		if (menu.size > 1) {
-			menu.setPopupVisible(true);
-		}
 	}
 
 	@Override
@@ -249,15 +251,12 @@ class ToolToggleButton extends JToggleButton
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		if (popupTriangleClicked(e.getY())) {
-			menu.setPopupVisible(true);
-		}
+		// Dragging over the popup arrow should not open the menu.
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		menu.mouseOver();
-		showToolTipText = menu.size <= 1 && !menu.isPopupShowing();
+		showToolTipText = !menu.isPopupShowing();
 
 		// highlight popup menu triangle
 		if (menu.size > 1 && popupTriangleHighlighting != popupTriangleClicked(e.getY())) {
