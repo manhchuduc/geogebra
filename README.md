@@ -25,6 +25,14 @@ where `A.B.C.D` is your IP address.
 Then you can access the dev server through `http://A.B.C.D:8888`.
 You can also run `./gradlew :web:tasks` to list other options.
 
+GWT DevMode opens a Swing window, so running this command in a headless
+environment (for example, a remote container without a display) may report a
+`HeadlessException`. If `xvfb` is installed, run it with a virtual display:
+
+```
+xvfb-run -a ./gradlew -p source/web :web:run -Pgbind=0.0.0.0
+```
+
 ## Running the desktop version (Classic 5)
 To start the desktop version from command line, run
 
