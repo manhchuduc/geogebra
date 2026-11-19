@@ -60,4 +60,5 @@ jobs:
           gh release upload "$RELEASE_TAG" \
             geogebra-classic5-portable-linux-x64.tar.gz \
             geogebra-classic5-portable-windows-x64.zip \
+            --repo "$GITHUB_REPOSITORY" \
             --clobber
