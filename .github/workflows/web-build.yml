@@ -46,6 +46,7 @@ jobs:
         with:
           name: geogebra-web-build
           path: |
+            source/web/web/war/
             source/web/web/build/s3/
             source/web/web/build/symbolMapsGz/
           if-no-files-found: error
