@@ -41,6 +41,9 @@ jobs:
       - name: Build web app
         run: ./gradlew -p source/web :web:prepareS3Upload
 
+      - name: Prepare Pages entry point
+        run: cp source/web/web/war/suite.html source/web/web/war/index.html
+
       - name: Upload web build artifact
         uses: actions/upload-artifact@v4
         with:
@@ -50,3 +53,24 @@ jobs:
             source/web/web/build/s3/
             source/web/web/build/symbolMapsGz/
           if-no-files-found: error
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: source/web/web/war
+
+  deploy:
+    name: Deploy to GitHub Pages
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

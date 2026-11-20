@@ -25,6 +25,13 @@ where `A.B.C.D` is your IP address.
 Then you can access the dev server through `http://A.B.C.D:8888`.
 You can also run `./gradlew :web:tasks` to list other options.
 
+## Deploying the web version to GitHub Pages
+
+The `Build web app` workflow deploys the built web version to GitHub Pages after
+a successful build on `main`. In the repository settings, open **Settings >
+Pages** and set **Build and deployment > Source** to **GitHub Actions**. The
+deployed root page opens the Calculator Suite.
+
 GWT DevMode opens a Swing window, so running this command in a headless
 environment (for example, a remote container without a display) may report a
 `HeadlessException`. If `xvfb` is installed, run it with a virtual display:
